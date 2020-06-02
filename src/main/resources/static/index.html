@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Math</title>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+    <script type="text/javascript" rel="stylesheet" src="js/jquery-3.5.0.js"></script>
+    <script type="text/javascript" rel="stylesheet" src="js/bootstrap.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            list = new Array();
+            $("#add").click(function () {
+                $.ajax({
+                    "url": "/add",
+                    "type": "post",
+                    "dataType": "json",
+                    "async": "false",
+                    "success": function (response) {
+                        var json = response.data;
+                        var parse = JSON.parse(json);
+                        showData(parse);
+                    },
+                    "error": function () {
+                        alert("出错了");
+                    }
+                });
+            });
+            $("#sub").click(function () {
+                $.ajax({
+                    "url": "/sub",
+                    "type": "post",
+                    "dataType": "json",
+                    "async": "false",
+                    "success": function (response) {
+                        var json = response.data;
+                        var parse = JSON.parse(json);
+                        showData(parse);
+                    },
+                    "error": function () {
+                        alert("出错了");
+                    }
+                });
+            });
+            $("#random").click(function () {
+                $.ajax({
+                    "url": "/random",
+                    "type": "post",
+                    "dataType": "json",
+                    "async": "false",
+                    "success": function (response) {
+                        var json = response.data;
+                        var parse = JSON.parse(json);
+                        showData(parse);
+                    },
+                    "error": function () {
+                        alert("出错了");
+                    }
+                });
+            });
+
+            function showData(data) {
+                $("#tbody").empty();
+                var tr = "";
+                var input = "";
+                for (var i = 0; i < data.length; i++) {
+                    var first = data[i].first;
+                    var second = data[i].second;
+                    var oper = data[i].oper;
+                    list[i] = data[i].result;
+
+                    input = "<td>" + first + " " + oper + " " + second + "<input type=" + "text" + " id=" + 'result' + i + " class=" +'form-control'+ ">" + "</td>";
+                    tr = tr + input;
+
+                    if ((i + 1) % 5 === 0 && i !== 0) {
+                        tr = "<tr>" + tr + "</tr>"
+                        $("#tbody").append(tr);
+                        tr = "";
+                    }
+                }
+            }
+
+            $("#submit").click(function () {
+                for (let i = 0; i < 50; i++) {
+                    var val = $("#result" + i).val();
+                    console.log(val + " " + list[i]);
+                    if (val == list[i]) {
+                        $("#result" + i).css("background","#90EE90");
+                    } else {
+                        $("#result" + i).css("background","#808080");
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<table class="table">
+    <thead>
+        <tr>
+            <th><h1 class="h4" style="text-align: center">算数生成器</h1></th>
+            <th><i class="btn btn-primary btn-success" id="add" href="/add">生成加法运算</i></th>
+            <th><i class="btn btn-primary btn-success" id="sub" href="/sub">生成减法运算</i></th>
+            <th><i class="btn btn-primary btn-success" id="random" href="/random">生成混合运算</i></th>
+            <th><i  class="btn btn-primary btn-danger" id="submit" href="/submit">提交</i></th>
+        </tr>
+    </thead>
+</table>
+<form>
+    <table class="table table-striped table-bordered table-hover">
+        <tbody class="table table-striped" id="tbody">
+        </tbody>
+    </table>
+</form>
+</body>
+</html>
